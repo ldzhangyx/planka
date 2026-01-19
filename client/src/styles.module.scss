@@ -5,8 +5,44 @@
 
 :global {
   #app {
-    background: #22252a;
+    --color-background: #22252a;
+    --color-header-background: rgba(0, 0, 0, 0.24);
+    --color-sidebar-background: #2a2b2d;
+    --color-sidebar-border: #38393b;
+    --color-text-primary: #fff;
+    --color-text-secondary: #ccc;
+    --color-icon: rgba(255, 255, 255, 0.5);
+    --color-icon-hover: rgba(255, 255, 255, 0.9);
+    --color-item-hover-bg: rgba(255, 255, 255, 0.08);
+
+    --color-list-background: #2a2b2d;
+    --color-list-text: #b6c2cf;
+    --color-card-background: #22252a;
+    --color-card-text: #fff;
+
+    background: var(--color-background);
+    color: var(--color-text-primary);
     overflow-x: auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &.light {
+      --color-background: #f4f5f7;
+      --color-header-background: #ffffff;
+      --color-sidebar-background: #ffffff;
+      --color-sidebar-border: #dfe1e6;
+      --color-text-primary: #172b4d;
+      --color-text-secondary: #5e6c84;
+      --color-icon: #42526e;
+      --color-icon-hover: #172b4d;
+      --color-item-hover-bg: rgba(9, 30, 66, 0.08);
+
+      --color-list-background: #ebecf0;
+      --color-list-text: #172b4d;
+      --color-card-background: #ffffff;
+      --color-card-text: #172b4d;
+    }
+
+
 
     &::-webkit-scrollbar {
       height: auto;

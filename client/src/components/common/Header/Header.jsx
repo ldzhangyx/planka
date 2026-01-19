@@ -17,6 +17,7 @@ import { BoardMembershipRoles, BoardViews, UserRoles } from '../../../constants/
 import UserAvatar from '../../users/UserAvatar';
 import UserActionsStep from '../../users/UserActionsStep';
 import NotificationsStep from '../../notifications/NotificationsStep';
+import ThemeSwitch from '../ThemeSwitch/ThemeSwitch';
 
 import styles from './Header.module.scss';
 
@@ -71,6 +72,28 @@ const Header = React.memo(() => {
     };
   }, shallowEqual);
 
+  const [isDark, setIsDark] = React.useState(() => {
+    return localStorage.getItem('theme') !== 'light';
+  });
+
+  const handleThemeToggle = useCallback(() => {
+    setIsDark((prev) => {
+      const next = !prev;
+      localStorage.setItem('theme', next ? 'dark' : 'light');
+      return next;
+    });
+  }, []);
+
+  React.useEffect(() => {
+    if (isDark) {
+      document.getElementById('app').classList.remove('light');
+      document.getElementById('app').classList.add('dark');
+    } else {
+      document.getElementById('app').classList.remove('dark');
+      document.getElementById('app').classList.add('light');
+    }
+  }, [isDark]);
+
   const dispatch = useDispatch();
 
   const handleToggleFavoritesClick = useCallback(() => {
@@ -99,7 +122,7 @@ const Header = React.memo(() => {
           PLANKA
         </Link>
       )}
-      <Menu inverted size="large" className={styles.menu}>
+      <Menu inverted={isDark} size="large" className={styles.menu}>
         {project && (
           <Menu.Menu position="left">
             <Menu.Item
@@ -132,6 +155,9 @@ const Header = React.memo(() => {
               />
             </Menu.Item>
           )}
+          <Menu.Item className={styles.item}>
+            <ThemeSwitch isDark={isDark} onToggle={handleThemeToggle} />
+          </Menu.Item>
           {withEditModeToggler && (
             <Menu.Item
               className={classNames(styles.item, styles.itemHoverable)}

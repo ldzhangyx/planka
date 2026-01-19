@@ -9,23 +9,31 @@
   }
 
   .addCardButton {
-    background: #dfe3e6;
+    background: var(--color-list-background); // Slightly lighter than list bg? Or same?
+    // Current design: list bg #dfe3e6, btn bg #dfe3e6 (same) but hover #c3cbd0.
+    // Actually in screenshot "Add another list" is dark.
+    // Let's check AddList button styles.
+    // But for "Add another card", it is INSIDE the list.
+    // Let's use transparency or variables.
+    background: transparent;
     border: none;
-    color: #6b808c;
+    color: var(--color-list-text);
     cursor: pointer;
     display: block;
-    fill: #6b808c;
+    fill: var(--color-list-text);
     flex: 1;
     font-weight: normal;
     height: 36px;
     outline: none;
     padding: 8px;
     text-align: left;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 4px;
 
     &:hover {
-      background: #c3cbd0;
-      color: #17394d;
-      fill: #17394d;
+      background: var(--color-item-hover-bg);
+      color: var(--color-text-primary);
+      fill: var(--color-text-primary);
     }
 
     &.paste {
@@ -139,7 +147,7 @@
   }
 
   .headerName {
-    color: #17394d;
+    color: var(--color-list-text);
     font-weight: bold;
     line-height: 20px;
     max-height: 256px;
@@ -148,6 +156,7 @@
     overflow-wrap: break-word;
     padding: 4px 8px;
     word-break: break-word;
+    transition: color 0.3s ease;
   }
 
   .headerNameColor {
@@ -161,12 +170,13 @@
   }
 
   .outerWrapper {
-    background: #dfe3e6;
+    background: var(--color-list-background);
     border-radius: 3px;
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 198px);
     overflow: hidden;
+    transition: background-color 0.3s ease;
   }
 
   .outerWrapperTransitioning {

@@ -5,10 +5,10 @@
 
 :global(#app) {
   .addButton {
-    background: rgba(0, 0, 0, 0.24);
+    background: var(--color-item-hover-bg);
     border-radius: 50%;
     box-shadow: none;
-    color: #fff;
+    color: var(--color-text-primary);
     line-height: 36px;
     margin: 0;
     padding: 0;
@@ -17,7 +17,8 @@
     width: 36px;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.32);
+      background: var(--color-item-hover-bg);
+      filter: brightness(0.9);
     }
   }
 

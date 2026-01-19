@@ -7,7 +7,7 @@
   .editButton {
     background: transparent;
     box-shadow: none;
-    color: #fff;
+    color: var(--color-icon);
     font-size: 15px;
     line-height: 34px;
     margin-left: 8px;
@@ -16,7 +16,8 @@
     width: 34px;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--color-item-hover-bg);
+      color: var(--color-icon-hover);
     }
   }
 
@@ -31,7 +32,7 @@
     &:active,
     &:hover {
       background: transparent;
-      color: rgba(255, 255, 255, 0.9);
+      color: var(--color-icon-hover);
 
       .editButton {
         opacity: 1;
@@ -41,7 +42,7 @@
 
   .itemHoverable:hover {
     cursor: pointer;
-    background: rgba(0, 0, 0, 0.32);
+    background: var(--color-item-hover-bg);
   }
 
   .itemIconEnabled {
@@ -49,7 +50,7 @@
   }
 
   .logo {
-    color: #fff;
+    color: var(--color-text-primary);
     flex: 0 0 auto;
     letter-spacing: 3.5px;
     line-height: 50px;
@@ -66,7 +67,7 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
-    color: #fff;
+    color: var(--color-text-primary);
     flex: 1 1 auto;
     height: 50px;
     margin: 0;
@@ -96,6 +97,7 @@
 
   .userName {
     margin-right: 10px;
+    color: var(--color-text-primary);
 
     @media only screen and (width < 768px) {
       display: none;
@@ -103,8 +105,9 @@
   }
 
   .wrapper {
-    background: rgba(0, 0, 0, 0.24);
+    background: var(--color-header-background);
     display: flex;
     flex: 0 0 auto;
+    transition: background-color 0.3s ease;
   }
 }

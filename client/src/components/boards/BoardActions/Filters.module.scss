@@ -31,16 +31,18 @@
   }
 
   .filterLabel {
-    background: rgba(0, 0, 0, 0.24);
+    background: var(--color-item-hover-bg); // Was rgba(0,0,0,0.24)
     border-radius: 3px;
-    color: #fff;
+    color: var(--color-text-primary);
     display: inline-block;
     font-size: 12px;
     line-height: 20px;
     padding: 2px 8px;
+    transition: background-color 0.3s, color 0.3s;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.32);
+      background: var(--color-item-hover-bg); // Adjust hover if needed
+      filter: brightness(0.9);
     }
   }
 
@@ -50,7 +52,7 @@
 
   .filterTitle {
     border-radius: 3px;
-    color: #fff;
+    color: var(--color-text-primary);
     display: inline-block;
     font-size: 12px;
     line-height: 20px;
@@ -73,18 +75,18 @@
   }
 
   .searchInactive {
-    color: #fff;
+    color: var(--color-text-primary);
     height: 24px;
     width: 220px;
 
     input {
-      background: rgba(0, 0, 0, 0.24);
+      background: var(--color-item-hover-bg);
       border: none;
-      color: #fff !important;
+      color: var(--color-text-primary) !important;
       font-size: 12px;
 
       &::placeholder {
-        color: #fff;
+        color: var(--color-text-secondary);
       }
     }
   }
