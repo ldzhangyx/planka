@@ -21,6 +21,8 @@ import UserSettingsModal from '../../users/UserSettingsModal';
 import ProjectBackground from '../../projects/ProjectBackground';
 import AddProjectModal from '../../projects/AddProjectModal';
 
+import styles from './Core.module.scss';
+
 const Core = React.memo(() => {
   const isInitializing = useSelector(selectors.selectIsInitializing);
   const isSocketDisconnected = useSelector(selectors.selectIsSocketDisconnected);
@@ -112,7 +114,7 @@ const Core = React.memo(() => {
   }
 
   return (
-    <>
+    <div className={styles.wrapper}>
       {isInitializing || !currentUserId ? (
         <Loader active size="massive" />
       ) : (
@@ -125,7 +127,7 @@ const Core = React.memo(() => {
         </>
       )}
       {messageNode}
-    </>
+    </div>
   );
 });
 

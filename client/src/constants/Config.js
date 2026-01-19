@@ -4,7 +4,7 @@
  */
 
 const SERVER_BASE_URL =
-  import.meta.env.VITE_SERVER_BASE_URL || (import.meta.env.DEV ? 'http://localhost:1337' : '');
+  import.meta.env.VITE_SERVER_BASE_URL || (import.meta.env.DEV ? 'http://localhost:3337' : '');
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 const ACCESS_TOKEN_VERSION_KEY = 'accessTokenVersion';

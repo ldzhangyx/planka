@@ -5,17 +5,16 @@ services:
       dockerfile: Dockerfile.dev
     image: planka-dev
     pull_policy: never
-    command: ["bash", "-c", "npm install && npm run db:init && npm start"]
+    command: [ "bash", "-c", "npm install && npm run db:init && npm start" ]
     restart: on-failure
     volumes:
       - ./server:/app
     ports:
-      - 1337:1337
+      - 3337:1337
     environment:
-      - BASE_URL=http://localhost:1337
+      - BASE_URL=http://localhost:3337
       - DATABASE_URL=postgresql://postgres@postgres/planka
       - SECRET_KEY=notsecretkey
-
       # - LOG_LEVEL=warn
 
       # - TRUST_PROXY=true
@@ -99,12 +98,12 @@ services:
   planka-client:
     image: planka-dev
     pull_policy: never
-    command: ["bash", "-c", "npm install && npx vite --host"]
+    command: [ "bash", "-c", "npm install && npx vite --host" ]
     restart: on-failure
     volumes:
       - ./client:/app
     ports:
-      - 3000:3000
+      - 4000:3000
 
   postgres:
     image: postgres:16-alpine
@@ -115,11 +114,7 @@ services:
       - POSTGRES_DB=planka
       - POSTGRES_HOST_AUTH_METHOD=trust
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-planka} && psql -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-planka} -c 'SELECT 1'",
-        ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-planka} && psql -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-planka} -c 'SELECT 1'" ]
       interval: 3s
       timeout: 5s
       retries: 15

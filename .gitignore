@@ -13,3 +13,9 @@ yarn.lock
 
 # Chart dependencies
 **/charts/*.tgz
+
+# Production deployment (contains secrets - DO NOT COMMIT)
+production/
+
+# Private documentation
+DEPLOYMENT.md
