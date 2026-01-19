@@ -12,11 +12,12 @@ import { useTransitioning } from '../../../lib/hooks';
 import { usePopup } from '../../../lib/popup';
 
 import selectors from '../../../selectors';
-import { BoardViews } from '../../../constants/Enums';
 import Home from '../Home';
 import GhostError from '../GhostError';
 import Board from '../../boards/Board';
 import AddBoardStep from '../../boards/AddBoardStep';
+import BoardSidebar from '../../boards/BoardSidebar';
+import BoardActions from '../../boards/BoardActions';
 
 import styles from './Static.module.scss';
 
@@ -65,25 +66,28 @@ const Static = React.memo(() => {
     ];
 
     contentNode = (
-      <div className={styles.message}>
-        <Icon inverted name="hand point up outline" size="huge" className={styles.messageIcon} />
-        <h1 className={styles.messageTitle}>
-          {t('common.openBoard', {
-            context: 'title',
-          })}
-        </h1>
-        <div className={styles.messageContent}>
-          <Trans i18nKey="common.createNewOneOrSelectExistingOne" />
+      <>
+        <BoardSidebar />
+        <div className={styles.message}>
+          <Icon inverted name="hand point up outline" size="huge" className={styles.messageIcon} />
+          <h1 className={styles.messageTitle}>
+            {t('common.openBoard', {
+              context: 'title',
+            })}
+          </h1>
+          <div className={styles.messageContent}>
+            <Trans i18nKey="common.createNewOneOrSelectExistingOne" />
+          </div>
+          {canAddBoard && (
+            <AddBoardPopup>
+              <Button basic positive size="large" className={styles.button}>
+                <Icon name="plus" />
+                {t('action.createBoard')}
+              </Button>
+            </AddBoardPopup>
+          )}
         </div>
-        {canAddBoard && (
-          <AddBoardPopup>
-            <Button basic positive size="large" className={styles.button}>
-              <Icon name="plus" />
-              {t('action.createBoard')}
-            </Button>
-          </AddBoardPopup>
-        )}
-      </div>
+      </>
     );
   } else if (board.isFetching) {
     wrapperClassNames = [
@@ -91,15 +95,37 @@ const Static = React.memo(() => {
       isFavoritesActive ? styles.wrapperProjectWithFavorites : styles.wrapperProject,
     ];
 
-    contentNode = <Loader active size="big" />;
+    contentNode = (
+      <>
+        <BoardSidebar />
+        <Loader active size="big" />
+      </>
+    );
   } else {
     wrapperClassNames = [
       isFavoritesActive ? styles.wrapperBoardWithFavorites : styles.wrapperBoard,
-      [BoardViews.GRID, BoardViews.LIST].includes(board.view) && styles.wrapperVertical,
       styles.wrapperFlex,
     ];
 
-    contentNode = <Board />;
+    contentNode = (
+      <>
+        <BoardSidebar />
+        <div
+          style={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            overflow: 'hidden',
+          }}
+        >
+          {board && !board.isFetching && <BoardActions />}
+          <div style={{ flexGrow: 1, minWidth: 0, position: 'relative' }}>
+            <Board />
+          </div>
+        </div>
+      </>
+    );
   }
 
   return (

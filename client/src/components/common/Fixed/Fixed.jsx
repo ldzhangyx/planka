@@ -11,13 +11,10 @@ import Header from '../Header';
 import Favorites from '../Favorites';
 import HomeActions from '../HomeActions';
 import Project from '../../projects/Project';
-import BoardActions from '../../boards/BoardActions';
-
 import styles from './Fixed.module.scss';
 
 const Fixed = React.memo(() => {
   const { projectId } = useSelector(selectors.selectPath);
-  const board = useSelector(selectors.selectCurrentBoard);
 
   return (
     <div className={styles.wrapper}>
@@ -25,7 +22,6 @@ const Fixed = React.memo(() => {
       <Favorites />
       {projectId === undefined && <HomeActions />}
       {projectId && <Project />}
-      {board && !board.isFetching && <BoardActions />}
     </div>
   );
 });
