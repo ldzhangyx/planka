@@ -32,7 +32,6 @@ const StepTypes = {
   EDIT_DUE_DATE: 'EDIT_DUE_DATE',
   EDIT_STOPWATCH: 'EDIT_STOPWATCH',
   MOVE: 'MOVE',
-  ARCHIVE: 'ARCHIVE',
   DELETE: 'DELETE',
 };
 
@@ -65,7 +64,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
     canDuplicate,
     canMove,
     canRestore,
-    canArchive,
     canDelete,
     canUseMembers,
     canUseLabels,
@@ -86,7 +84,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
         canDuplicate: false,
         canMove: false,
         canRestore: isEditor,
-        canArchive: isEditor,
         canDelete: isEditor,
         canUseMembers: false,
         canUseLabels: false,
@@ -103,7 +100,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
       canDuplicate: isEditor,
       canMove: isEditor,
       canRestore: null,
-      canArchive: isEditor,
       canDelete: isEditor,
       canUseMembers: isEditor,
       canUseLabels: isEditor,
@@ -137,10 +133,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
       menuItemsTotal += 1;
       actionBarItemsTotal += 1;
     }
-    if (list.type !== ListTypes.ARCHIVE && canArchive) {
-      menuItemsTotal += 1;
-      actionBarItemsTotal += 1;
-    }
     if (canDelete) {
       menuItemsTotal += 1;
       actionBarItemsTotal += 1;
@@ -161,7 +153,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
     canDuplicate,
     canMove,
     canRestore,
-    canArchive,
     canDelete,
     canUseMembers,
     canUseLabels,
@@ -195,7 +186,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
       canDuplicate ||
       canMove ||
       (prevList && canRestore) ||
-      (list.type !== ListTypes.ARCHIVE && canArchive && !withActionBar) ||
       (canDelete && !withActionBar)
     );
   }, [
@@ -206,7 +196,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
     canDuplicate,
     canMove,
     canRestore,
-    canArchive,
     canDelete,
     withActionBar,
   ]);
@@ -240,10 +229,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
   const handleRestoreClick = useCallback(() => {
     dispatch(entryActions.moveCard(cardId, card.prevListId, undefined, true));
   }, [cardId, card.prevListId, dispatch]);
-
-  const handleArchiveConfirm = useCallback(() => {
-    dispatch(entryActions.moveCardToArchive(cardId));
-  }, [cardId, dispatch]);
 
   const isInTrashList = list.type === ListTypes.TRASH;
 
@@ -312,10 +297,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
     openStep(StepTypes.MOVE);
   }, [openStep]);
 
-  const handleArchiveClick = useCallback(() => {
-    openStep(StepTypes.ARCHIVE);
-  }, [openStep]);
-
   const handleDeleteClick = useCallback(() => {
     openStep(StepTypes.DELETE);
   }, [openStep]);
@@ -359,16 +340,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
         return <EditStopwatchStep cardId={cardId} onBack={handleBack} onClose={onClose} />;
       case StepTypes.MOVE:
         return <MoveCardStep id={cardId} onBack={handleBack} onClose={onClose} />;
-      case StepTypes.ARCHIVE:
-        return (
-          <ConfirmationStep
-            title="common.archiveCard"
-            content="common.areYouSureYouWantToArchiveThisCard"
-            buttonContent="action.archiveCard"
-            onConfirm={handleArchiveConfirm}
-            onBack={handleBack}
-          />
-        );
       case StepTypes.DELETE:
         return (
           <ConfirmationStep
@@ -494,14 +465,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
               })}
             </Menu.Item>
           )}
-          {list.type !== ListTypes.ARCHIVE && canArchive && !withActionBar && (
-            <Menu.Item className={styles.menuItem} onClick={handleArchiveClick}>
-              <Icon name="folder open outline" className={styles.menuItemIcon} />
-              {t('action.archiveCard', {
-                context: 'title',
-              })}
-            </Menu.Item>
-          )}
           {canDelete && !withActionBar && (
             <Menu.Item className={styles.menuItem} onClick={handleDeleteClick}>
               <Icon name="trash alternate outline" className={styles.menuItemIcon} />
@@ -539,19 +502,6 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
                     <Icon fitted name="cut" />
                     <span className={styles.actionBarItemText}>
                       {t('action.cut', {
-                        context: 'title',
-                      })}
-                    </span>
-                  </a>
-                )}
-                {list.type !== ListTypes.ARCHIVE && canArchive && (
-                  /* eslint-disable-next-line jsx-a11y/anchor-is-valid,
-                                              jsx-a11y/click-events-have-key-events,
-                                              jsx-a11y/no-static-element-interactions */
-                  <a className={styles.actionBarItem} onClick={handleArchiveClick}>
-                    <Icon fitted name="archive" />
-                    <span className={styles.actionBarItemText}>
-                      {t('action.archive', {
                         context: 'title',
                       })}
                     </span>

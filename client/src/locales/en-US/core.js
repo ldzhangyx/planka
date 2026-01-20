@@ -36,6 +36,8 @@ export default {
         'All changes will be automatically saved<br />after connection restored.',
       alphabetically: 'Alphabetically',
       alwaysDisplayCardCreator: 'Always display card creator',
+      archiveBoard_title: 'Archive Board',
+      archivedBoards: 'Archived boards',
       apiKeyCreated_title: 'API Key Created',
       apiKey_title: 'API Key',
       archive: 'Archive',
@@ -44,6 +46,7 @@ export default {
       areYouSureYouWantToActivateThisUser: 'Are you sure you want to activate this user?',
       areYouSureYouWantToArchiveCards: 'Are you sure you want to archive cards?',
       areYouSureYouWantToArchiveThisCard: 'Are you sure you want to archive this card?',
+      areYouSureYouWantToArchiveThisBoard: 'Are you sure you want to archive this board?',
       areYouSureYouWantToAssignThisProjectManagerAsOwner:
         'Are you sure you want to assign this project manager as owner?',
       areYouSureYouWantToDeactivateThisUser: 'Are you sure you want to deactivate this user?',
@@ -79,6 +82,7 @@ export default {
         'Are you sure you want to make this project shared?',
       areYouSureYouWantToRegenerateThisApiKey:
         'Are you sure you want to regenerate this API key? The previous key will no longer work.',
+      areYouSureYouWantToRestoreThisBoard: 'Are you sure you want to restore this board?',
       areYouSureYouWantToRemoveThisManagerFromProject:
         'Are you sure you want to remove this manager from the project?',
       areYouSureYouWantToRemoveThisMemberFromBoard:
@@ -149,6 +153,7 @@ export default {
       deleteAttachment_title: 'Delete Attachment',
       deleteBackgroundImage_title: 'Delete Background Image',
       deleteBoard_title: 'Delete Board',
+      restoreBoard_title: 'Restore Board',
       deleteCardForever_title: 'Delete Card Forever',
       deleteCard_title: 'Delete Card',
       deleteComment_title: 'Delete Comment',
@@ -384,6 +389,8 @@ export default {
       addUser: 'Add user',
       addWebhook: 'Add webhook',
       archive: 'Archive',
+      archiveBoard: 'Archive board',
+      archiveBoard_title: 'Archive Board',
       archiveCard: 'Archive card',
       archiveCard_title: 'Archive Card',
       archiveCards: 'Archive cards',
@@ -458,6 +465,8 @@ export default {
       makeCover_title: 'Make Cover',
       makeProjectPrivate: 'Make project private',
       makeProjectPrivate_title: 'Make Project Private',
+      restoreBoard: 'Restore board',
+      restoreBoard_title: 'Restore Board',
       makeProjectShared: 'Make project shared',
       makeProjectShared_title: 'Make Project Shared',
       move: 'Move',

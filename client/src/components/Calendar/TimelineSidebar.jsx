@@ -3,7 +3,7 @@
  * Licensed under the Fair Use License: https://github.com/plankanban/planka/blob/master/LICENSE.md
  */
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +21,65 @@ const TimelineSidebar = React.memo(({ cards, unscheduledCards }) => {
   const dispatch = useDispatch();
   const { projectId } = useSelector(selectors.selectPath);
 
-  console.log('TimelineSidebar render. Cards:', cards.length, 'Unscheduled:', unscheduledCards ? unscheduledCards.length : 0);
+  const minWidth = 220;
+  const maxWidth = 420;
+  const storageKey = 'planka.calendarSidebar.width';
+
+  const [width, setWidth] = useState(() => {
+    const saved = Number.parseInt(localStorage.getItem(storageKey), 10);
+    if (Number.isFinite(saved)) {
+      return Math.min(maxWidth, Math.max(minWidth, saved));
+    }
+
+    return 280;
+  });
+
+  const widthRef = useRef(width);
+  useEffect(() => {
+    widthRef.current = width;
+  }, [width]);
+
+  const isResizingRef = useRef(false);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+
+  const handleResizeMouseDown = useCallback(
+    (event) => {
+      event.preventDefault();
+      isResizingRef.current = true;
+      startXRef.current = event.clientX;
+      startWidthRef.current = widthRef.current;
+
+      const handleMouseMove = (moveEvent) => {
+        if (!isResizingRef.current) {
+          return;
+        }
+
+        const deltaX = moveEvent.clientX - startXRef.current;
+        const nextWidth = Math.min(
+          maxWidth,
+          Math.max(minWidth, startWidthRef.current - deltaX),
+        );
+
+        setWidth(nextWidth);
+      };
+
+      const handleMouseUp = () => {
+        if (!isResizingRef.current) {
+          return;
+        }
+
+        isResizingRef.current = false;
+        localStorage.setItem(storageKey, String(widthRef.current));
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    },
+    [maxWidth, minWidth, storageKey],
+  );
 
 
 
@@ -136,7 +194,8 @@ const TimelineSidebar = React.memo(({ cards, unscheduledCards }) => {
   const hasUnscheduledCards = unscheduledCards && unscheduledCards.length > 0;
 
   return (
-    <div className={styles.sidebar}>
+    <div className={styles.sidebar} style={{ width, minWidth: width }}>
+      <div className={styles.resizer} onMouseDown={handleResizeMouseDown} role="presentation" />
       {/* Agenda Section - Top */}
       <div className={styles.section}>
         <div className={styles.header}>

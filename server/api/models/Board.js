@@ -26,6 +26,7 @@
  *         - limitCardTypesToDefaultOne
  *         - alwaysDisplayCardCreator
  *         - expandTaskListsByDefault
+ *         - isArchived
  *         - createdAt
  *         - updatedAt
  *       properties:
@@ -71,6 +72,11 @@
  *           type: boolean
  *           default: false
  *           description: Whether to expand task lists by default
+ *           example: false
+ *         isArchived:
+ *           type: boolean
+ *           default: false
+ *           description: Whether the board is archived
  *           example: false
  *         createdAt:
  *           type: string
@@ -120,6 +126,11 @@ module.exports = {
       isIn: Object.values(Views),
       defaultsTo: Views.KANBAN,
       columnName: 'default_view',
+    },
+    isArchived: {
+      type: 'boolean',
+      columnName: 'is_archived',
+      defaultsTo: false,
     },
     defaultCardType: {
       type: 'string',

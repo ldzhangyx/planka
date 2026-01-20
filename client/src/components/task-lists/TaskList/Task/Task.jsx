@@ -3,7 +3,7 @@
  * Licensed under the Fair Use License: https://github.com/plankanban/planka/blob/master/LICENSE.md
  */
 
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -62,6 +62,7 @@ const Task = React.memo(({ id, index }) => {
   const dispatch = useDispatch();
   const [isEditNameOpened, setIsEditNameOpened] = useState(false);
   const [, , setIsClosableActive] = useContext(ClosableContext);
+  const actionsPopupRef = useRef(null);
 
   const handleToggleChange = useCallback(() => {
     dispatch(
@@ -110,6 +111,20 @@ const Task = React.memo(({ id, index }) => {
     event.stopPropagation();
   }, []);
 
+  const handleContextMenu = useCallback(
+    (event) => {
+      if (!isEditable || !actionsPopupRef.current) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      actionsPopupRef.current.open();
+    },
+    [isEditable],
+  );
+
   useDidUpdate(() => {
     setIsClosableActive(isEditNameOpened);
   }, [isEditNameOpened]);
@@ -130,6 +145,7 @@ const Task = React.memo(({ id, index }) => {
             {...dragHandleProps} // eslint-disable-line react/jsx-props-no-spreading
             ref={innerRef}
             className={classNames(styles.wrapper, isDragging && styles.wrapperDragging)}
+            onContextMenu={handleContextMenu}
           >
             <span className={styles.checkboxWrapper}>
               <Checkbox
@@ -209,7 +225,7 @@ const Task = React.memo(({ id, index }) => {
                             )}
                           </SelectAssigneePopup>
                         )}
-                        <ActionsPopup taskId={id} onNameEdit={handleNameEdit}>
+                        <ActionsPopup ref={actionsPopupRef} taskId={id} onNameEdit={handleNameEdit}>
                           <Button className={styles.button}>
                             <Icon fitted name="pencil" size="small" />
                           </Button>

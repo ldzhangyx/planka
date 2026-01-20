@@ -10,6 +10,19 @@ import { selectPath } from './router';
 import { selectCurrentUserId } from './users';
 import { isLocalId } from '../utils/local-id';
 
+const getAvailableBoardModels = (projectModel, currentUserModel) =>
+  projectModel.getBoardsModelArrayAvailableForUser(currentUserModel);
+
+const getActiveBoardModels = (projectModel, currentUserModel) =>
+  getAvailableBoardModels(projectModel, currentUserModel).filter(
+    (boardModel) => !boardModel.isArchived,
+  );
+
+const getArchivedBoardModels = (projectModel, currentUserModel) =>
+  getAvailableBoardModels(projectModel, currentUserModel).filter(
+    (boardModel) => boardModel.isArchived,
+  );
+
 export const makeSelectProjectById = () =>
   createSelector(
     orm,
@@ -45,13 +58,61 @@ export const makeSelectBoardIdsByProjectId = () =>
 
       const currentUserModel = User.withId(currentUserId);
 
-      return projectModel
-        .getBoardsModelArrayAvailableForUser(currentUserModel)
-        .map((boardModel) => boardModel.id);
+      return getActiveBoardModels(projectModel, currentUserModel).map((boardModel) => boardModel.id);
     },
   );
 
 export const selectBoardIdsByProjectId = makeSelectBoardIdsByProjectId();
+
+export const makeSelectArchivedBoardIdsByProjectId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    (state) => selectCurrentUserId(state),
+    ({ Project, User }, id, currentUserId) => {
+      if (!id) {
+        return id;
+      }
+
+      const projectModel = Project.withId(id);
+
+      if (!projectModel) {
+        return projectModel;
+      }
+
+      const currentUserModel = User.withId(currentUserId);
+
+      return getArchivedBoardModels(projectModel, currentUserModel).map(
+        (boardModel) => boardModel.id,
+      );
+    },
+  );
+
+export const selectArchivedBoardIdsByProjectId = makeSelectArchivedBoardIdsByProjectId();
+
+export const makeSelectAllBoardIdsByProjectId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    (state) => selectCurrentUserId(state),
+    ({ Project, User }, id, currentUserId) => {
+      if (!id) {
+        return id;
+      }
+
+      const projectModel = Project.withId(id);
+
+      if (!projectModel) {
+        return projectModel;
+      }
+
+      const currentUserModel = User.withId(currentUserId);
+
+      return getAvailableBoardModels(projectModel, currentUserModel).map((boardModel) => boardModel.id);
+    },
+  );
+
+export const selectAllBoardIdsByProjectId = makeSelectAllBoardIdsByProjectId();
 
 export const makeSelectFirstBoardIdByProjectId = () =>
   createSelector(
@@ -66,7 +127,7 @@ export const makeSelectFirstBoardIdByProjectId = () =>
       }
 
       const currentUserModel = User.withId(currentUserId);
-      const boardsModels = projectModel.getBoardsModelArrayAvailableForUser(currentUserModel);
+      const boardsModels = getActiveBoardModels(projectModel, currentUserModel);
 
       return boardsModels[0] && boardsModels[0].id;
     },
@@ -87,7 +148,7 @@ export const makeSelectNotificationsTotalByProjectId = () =>
       }
 
       const currentUserModel = User.withId(currentUserId);
-      const boardsModels = projectModel.getBoardsModelArrayAvailableForUser(currentUserModel);
+      const boardsModels = getActiveBoardModels(projectModel, currentUserModel);
 
       return boardsModels.reduce(
         (result, boardModel) => result + boardModel.getUnreadNotificationsQuerySet().count(),
@@ -285,9 +346,49 @@ export const selectBoardIdsForCurrentProject = createSelector(
 
     const currentUserModel = User.withId(currentUserId);
 
-    return projectModel
-      .getBoardsModelArrayAvailableForUser(currentUserModel)
-      .map((boardModel) => boardModel.id);
+    return getActiveBoardModels(projectModel, currentUserModel).map((boardModel) => boardModel.id);
+  },
+);
+
+export const selectArchivedBoardIdsForCurrentProject = createSelector(
+  orm,
+  (state) => selectPath(state).projectId,
+  (state) => selectCurrentUserId(state),
+  ({ Project, User }, id, currentUserId) => {
+    if (!id) {
+      return id;
+    }
+
+    const projectModel = Project.withId(id);
+
+    if (!projectModel) {
+      return projectModel;
+    }
+
+    const currentUserModel = User.withId(currentUserId);
+
+    return getArchivedBoardModels(projectModel, currentUserModel).map((boardModel) => boardModel.id);
+  },
+);
+
+export const selectAllBoardIdsForCurrentProject = createSelector(
+  orm,
+  (state) => selectPath(state).projectId,
+  (state) => selectCurrentUserId(state),
+  ({ Project, User }, id, currentUserId) => {
+    if (!id) {
+      return id;
+    }
+
+    const projectModel = Project.withId(id);
+
+    if (!projectModel) {
+      return projectModel;
+    }
+
+    const currentUserModel = User.withId(currentUserId);
+
+    return getAvailableBoardModels(projectModel, currentUserModel).map((boardModel) => boardModel.id);
   },
 );
 
@@ -315,6 +416,10 @@ export default {
   selectProjectById,
   makeSelectBoardIdsByProjectId,
   selectBoardIdsByProjectId,
+  makeSelectArchivedBoardIdsByProjectId,
+  selectArchivedBoardIdsByProjectId,
+  makeSelectAllBoardIdsByProjectId,
+  selectAllBoardIdsByProjectId,
   makeSelectFirstBoardIdByProjectId,
   selectFirstBoardIdByProjectId,
   makeSelectNotificationsTotalByProjectId,
@@ -330,5 +435,7 @@ export default {
   selectBaseCustomFieldGroupIdsForCurrentProject,
   selectBaseCustomFieldGroupsForCurrentProject,
   selectBoardIdsForCurrentProject,
+  selectArchivedBoardIdsForCurrentProject,
+  selectAllBoardIdsForCurrentProject,
   selectIsCurrentUserManagerForCurrentProject,
 };

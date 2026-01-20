@@ -25,11 +25,31 @@ const GeneralPane = React.memo(() => {
   const dispatch = useDispatch();
   const [t] = useTranslation();
 
+  const handleArchiveConfirm = useCallback(() => {
+    dispatch(
+      entryActions.updateBoard(boardId, {
+        isArchived: true,
+      }),
+    );
+  }, [boardId, dispatch]);
+
+  const handleRestoreConfirm = useCallback(() => {
+    dispatch(
+      entryActions.updateBoard(boardId, {
+        isArchived: false,
+      }),
+    );
+  }, [boardId, dispatch]);
+
   const handleDeleteConfirm = useCallback(() => {
     dispatch(entryActions.deleteBoard(boardId));
   }, [boardId, dispatch]);
 
   const ConfirmationPopup = usePopupInClosableContext(ConfirmationStep);
+
+  if (!board) {
+    return null;
+  }
 
   return (
     <Tab.Pane attached={false} className={styles.wrapper}>
@@ -41,6 +61,39 @@ const GeneralPane = React.memo(() => {
           })}
         </Header>
       </Divider>
+      <div className={styles.action}>
+        {board.isArchived ? (
+          <ConfirmationPopup
+            title="common.restoreBoard"
+            content="common.areYouSureYouWantToRestoreThisBoard"
+            buttonContent="action.restoreBoard"
+            typeValue={board.name}
+            typeContent="common.typeTitleToConfirm"
+            onConfirm={handleRestoreConfirm}
+          >
+            <Button className={styles.actionButton}>
+              {t(`action.restoreBoard`, {
+                context: 'title',
+              })}
+            </Button>
+          </ConfirmationPopup>
+        ) : (
+          <ConfirmationPopup
+            title="common.archiveBoard"
+            content="common.areYouSureYouWantToArchiveThisBoard"
+            buttonContent="action.archiveBoard"
+            typeValue={board.name}
+            typeContent="common.typeTitleToConfirm"
+            onConfirm={handleArchiveConfirm}
+          >
+            <Button className={styles.actionButton}>
+              {t(`action.archiveBoard`, {
+                context: 'title',
+              })}
+            </Button>
+          </ConfirmationPopup>
+        )}
+      </div>
       <div className={styles.action}>
         <ConfirmationPopup
           title="common.deleteBoard"

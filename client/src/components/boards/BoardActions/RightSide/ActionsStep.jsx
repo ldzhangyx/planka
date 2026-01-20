@@ -23,6 +23,7 @@ import styles from './ActionsStep.module.scss';
 const StepTypes = {
   CUSTOM_FIELD_GROUPS: 'CUSTOM_FIELD_GROUPS',
   EMPTY_TRASH: 'EMPTY_TRASH',
+  ARCHIVE_BOARD: 'ARCHIVE_BOARD',
 };
 
 const ActionsStep = React.memo(({ onClose }) => {
@@ -69,6 +70,24 @@ const ActionsStep = React.memo(({ onClose }) => {
     [onClose, dispatch],
   );
 
+  const handleArchiveBoardConfirm = useCallback(() => {
+    dispatch(
+      entryActions.updateCurrentBoard({
+        isArchived: true,
+      }),
+    );
+    onClose();
+  }, [dispatch, onClose]);
+
+  const handleRestoreBoardConfirm = useCallback(() => {
+    dispatch(
+      entryActions.updateCurrentBoard({
+        isArchived: false,
+      }),
+    );
+    onClose();
+  }, [dispatch, onClose]);
+
   const handleActivitiesClick = useCallback(() => {
     dispatch(entryActions.openBoardActivitiesModal());
     onClose();
@@ -87,6 +106,10 @@ const ActionsStep = React.memo(({ onClose }) => {
     openStep(StepTypes.EMPTY_TRASH);
   }, [openStep]);
 
+  const handleArchiveBoardClick = useCallback(() => {
+    openStep(StepTypes.ARCHIVE_BOARD);
+  }, [openStep]);
+
   if (step) {
     switch (step.type) {
       case StepTypes.CUSTOM_FIELD_GROUPS:
@@ -98,6 +121,28 @@ const ActionsStep = React.memo(({ onClose }) => {
             content="common.areYouSureYouWantToEmptyTrash"
             buttonContent="action.emptyTrash"
             onConfirm={handleEmptyTrashConfirm}
+            onBack={handleBack}
+          />
+        );
+      case StepTypes.ARCHIVE_BOARD:
+        return board.isArchived ? (
+          <ConfirmationStep
+            title="common.restoreBoard"
+            content="common.areYouSureYouWantToRestoreThisBoard"
+            buttonContent="action.restoreBoard"
+            typeValue={board.name}
+            typeContent="common.typeTitleToConfirm"
+            onConfirm={handleRestoreBoardConfirm}
+            onBack={handleBack}
+          />
+        ) : (
+          <ConfirmationStep
+            title="common.archiveBoard"
+            content="common.areYouSureYouWantToArchiveThisBoard"
+            buttonContent="action.archiveBoard"
+            typeValue={board.name}
+            typeContent="common.typeTitleToConfirm"
+            onConfirm={handleArchiveBoardConfirm}
             onBack={handleBack}
           />
         );
@@ -152,7 +197,13 @@ const ActionsStep = React.memo(({ onClose }) => {
           )}
           <>
             <hr className={styles.divider} />
-            {[BoardContexts.BOARD, BoardContexts.ARCHIVE, BoardContexts.TRASH].map((context) => (
+            <Menu.Item className={styles.menuItem} onClick={handleArchiveBoardClick}>
+              <Icon name="folder open outline" className={styles.menuItemIcon} />
+              {t(board.isArchived ? 'action.restoreBoard' : 'action.archiveBoard', {
+                context: 'title',
+              })}
+            </Menu.Item>
+            {[BoardContexts.BOARD, BoardContexts.TRASH].map((context) => (
               <Menu.Item
                 key={context}
                 value={context}

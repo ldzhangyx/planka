@@ -20,7 +20,7 @@ const GeneralPane = React.memo(() => {
   const project = useSelector(selectors.selectCurrentProject);
 
   const hasBoards = useSelector(
-    (state) => selectors.selectBoardIdsForCurrentProject(state).length > 0,
+    (state) => selectors.selectAllBoardIdsForCurrentProject(state).length > 0,
   );
 
   const canEdit = useSelector(selectors.selectIsCurrentUserManagerForCurrentProject);

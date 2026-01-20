@@ -25,7 +25,6 @@ import EditName from './EditName';
 import ActionsStep from './ActionsStep';
 import DraggableCard from '../../cards/DraggableCard';
 import AddCard from '../../cards/AddCard';
-import ArchiveCardsStep from '../../cards/ArchiveCardsStep';
 import PlusMathIcon from '../../../assets/images/plus-math-icon.svg?react';
 
 import styles from './List.module.scss';
@@ -54,7 +53,7 @@ const List = React.memo(({ id, index }) => {
   const list = useSelector((state) => selectListById(state, id));
   const cardIds = useSelector((state) => selectFilteredCardIdsByListId(state, id));
 
-  const { canEdit, canArchiveCards, canAddCard, canPasteCard, canDropCard } = useSelector(
+  const { canEdit, canAddCard, canPasteCard, canDropCard } = useSelector(
     (state) => {
       const isEditModeEnabled = selectors.selectIsEditModeEnabled(state); // TODO: move out?
 
@@ -63,7 +62,6 @@ const List = React.memo(({ id, index }) => {
 
       return {
         canEdit: isEditModeEnabled && isEditor,
-        canArchiveCards: list.type === ListTypes.CLOSED && isEditor,
         canAddCard: isEditor,
         canPasteCard: isEditor,
         canDropCard: isEditor,
@@ -148,8 +146,6 @@ const List = React.memo(({ id, index }) => {
   }, [scrollBottomState]);
 
   const ActionsPopup = usePopup(ActionsStep);
-  const ArchiveCardsPopup = usePopup(ArchiveCardsStep);
-
   const addCardNode = canAddCard && (
     <AddCard
       isOpened={!!addCardPosition}
@@ -232,26 +228,17 @@ const List = React.memo(({ id, index }) => {
                   name={ListTypeIcons[list.type]}
                   className={classNames(
                     styles.headerIcon,
-                    list.isPersisted && (canEdit || canArchiveCards) && styles.headerIconHidable,
+                    list.isPersisted && canEdit && styles.headerIconHidable,
                   )}
                 />
               )}
-              {list.isPersisted &&
-                (canEdit ? (
-                  <ActionsPopup listId={id} onNameEdit={handleNameEdit} onCardAdd={handleCardAdd}>
-                    <Button className={styles.headerButton}>
-                      <Icon fitted name="pencil" size="small" />
-                    </Button>
-                  </ActionsPopup>
-                ) : (
-                  canArchiveCards && (
-                    <ArchiveCardsPopup listId={id}>
-                      <Button className={styles.headerButton}>
-                        <Icon fitted name="archive" size="small" />
-                      </Button>
-                    </ArchiveCardsPopup>
-                  )
-                ))}
+              {list.isPersisted && canEdit && (
+                <ActionsPopup listId={id} onNameEdit={handleNameEdit} onCardAdd={handleCardAdd}>
+                  <Button className={styles.headerButton}>
+                    <Icon fitted name="pencil" size="small" />
+                  </Button>
+                </ActionsPopup>
+              )}
             </div>
             <div ref={cardsWrapperRef} className={styles.cardsInnerWrapper}>
               <div className={styles.cardsOuterWrapper}>{cardsNode}</div>

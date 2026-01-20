@@ -30,7 +30,6 @@ const Board = React.memo(() => {
         Content = FiniteContent;
 
         break;
-      case BoardContexts.ARCHIVE:
       case BoardContexts.TRASH:
         Content = EndlessContent;
 

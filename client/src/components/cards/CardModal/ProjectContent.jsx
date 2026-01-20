@@ -76,7 +76,6 @@ const ProjectContent = React.memo(() => {
     canDuplicate,
     canMove,
     canRestore,
-    canArchive,
     canDelete,
     canUseLists,
     canUseMembers,
@@ -107,7 +106,6 @@ const ProjectContent = React.memo(() => {
         canDuplicate: false,
         canMove: isEditor,
         canRestore: isEditor,
-        canArchive: isEditor,
         canDelete: isEditor,
         canUseLists: isEditor,
         canUseMembers: false,
@@ -129,7 +127,6 @@ const ProjectContent = React.memo(() => {
       canDuplicate: isEditor,
       canMove: isEditor,
       canRestore: null,
-      canArchive: isEditor,
       canDelete: isEditor,
       canUseLists: isEditor,
       canUseMembers: isEditor,
@@ -196,10 +193,6 @@ const ProjectContent = React.memo(() => {
   const handleRestoreClick = useCallback(() => {
     dispatch(entryActions.moveCurrentCard(card.prevListId, undefined, true));
   }, [card.prevListId, dispatch]);
-
-  const handleArchiveConfirm = useCallback(() => {
-    dispatch(entryActions.moveCurrentCardToArchive());
-  }, [dispatch]);
 
   const handleDeleteConfirm = useCallback(() => {
     if (isInTrashList) {
@@ -659,7 +652,6 @@ const ProjectContent = React.memo(() => {
               canDuplicate ||
               canMove ||
               (canRestore && (isInArchiveList || isInTrashList)) ||
-              (canArchive && !isInArchiveList) ||
               canDelete) && (
               <div className={styles.actions}>
                 <span className={styles.actionsTitle}>{t('common.actions')}</span>
@@ -713,19 +705,6 @@ const ProjectContent = React.memo(() => {
                         })
                       : t('common.selectListToRestoreThisCard')}
                   </Button>
-                )}
-                {canArchive && !isInArchiveList && (
-                  <ConfirmationPopup
-                    title="common.archiveCard"
-                    content="common.areYouSureYouWantToArchiveThisCard"
-                    buttonContent="action.archiveCard"
-                    onConfirm={handleArchiveConfirm}
-                  >
-                    <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="folder open outline" className={styles.actionIcon} />
-                      {t('action.archive')}
-                    </Button>
-                  </ConfirmationPopup>
                 )}
                 {canDelete && (
                   <ConfirmationPopup

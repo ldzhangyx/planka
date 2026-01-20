@@ -13,13 +13,11 @@ import { Popup } from '../../../lib/custom-ui';
 import selectors from '../../../selectors';
 import entryActions from '../../../entry-actions';
 import { useSteps } from '../../../hooks';
-import { ListTypes } from '../../../constants/Enums';
 import EditColorStep from './EditColorStep';
 import SortStep from './SortStep';
 import MoveStep from './MoveStep';
 import SelectListTypeStep from '../SelectListTypeStep';
 import ConfirmationStep from '../../common/ConfirmationStep';
-import ArchiveCardsStep from '../../cards/ArchiveCardsStep';
 
 import styles from './ActionsStep.module.scss';
 
@@ -28,7 +26,6 @@ const StepTypes = {
   EDIT_COLOR: 'EDIT_COLOR',
   SORT: 'SORT',
   MOVE: 'MOVE',
-  ARCHIVE_CARDS: 'ARCHIVE_CARDS',
   DELETE: 'DELETE',
 };
 
@@ -82,10 +79,6 @@ const ActionsStep = React.memo(({ listId, onNameEdit, onCardAdd, onClose }) => {
     openStep(StepTypes.MOVE);
   }, [openStep]);
 
-  const handleArchiveCardsClick = useCallback(() => {
-    openStep(StepTypes.ARCHIVE_CARDS);
-  }, [openStep]);
-
   const handleDeleteClick = useCallback(() => {
     openStep(StepTypes.DELETE);
   }, [openStep]);
@@ -110,8 +103,6 @@ const ActionsStep = React.memo(({ listId, onNameEdit, onCardAdd, onClose }) => {
         return <SortStep listId={listId} onBack={handleBack} onClose={onClose} />;
       case StepTypes.MOVE:
         return <MoveStep id={listId} onBack={handleBack} onClose={onClose} />;
-      case StepTypes.ARCHIVE_CARDS:
-        return <ArchiveCardsStep listId={listId} onBack={handleBack} onClose={onClose} />;
       case StepTypes.DELETE:
         return (
           <ConfirmationStep
@@ -171,14 +162,6 @@ const ActionsStep = React.memo(({ listId, onNameEdit, onCardAdd, onClose }) => {
               context: 'title',
             })}
           </Menu.Item>
-          {list.type === ListTypes.CLOSED && (
-            <Menu.Item className={styles.menuItem} onClick={handleArchiveCardsClick}>
-              <Icon name="folder open outline" className={styles.menuItemIcon} />
-              {t('action.archiveCards', {
-                context: 'title',
-              })}
-            </Menu.Item>
-          )}
           <Menu.Item className={styles.menuItem} onClick={handleDeleteClick}>
             <Icon name="trash alternate outline" className={styles.menuItemIcon} />
             {t('action.deleteList', {

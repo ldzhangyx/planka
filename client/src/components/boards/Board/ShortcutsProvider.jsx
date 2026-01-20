@@ -22,7 +22,6 @@ import {
   BoardContexts,
   BoardMembershipRoles,
   BoardViews,
-  ListTypes,
 } from '../../../constants/Enums';
 import CardActionsStep from '../../cards/CardActionsStep';
 
@@ -42,14 +41,6 @@ const canPasteCard = (boardMembership) =>
 
 const canEditCardName = (boardMembership, list) => {
   if (isListArchiveOrTrash(list)) {
-    return false;
-  }
-
-  return !!boardMembership && boardMembership.role === BoardMembershipRoles.EDITOR;
-};
-
-const canArchiveCard = (boardMembership, list) => {
-  if (list.type === ListTypes.ARCHIVE) {
     return false;
   }
 
@@ -245,29 +236,6 @@ const ShortcutsProvider = React.memo(({ children }) => {
       selectedCardRef.current.editName();
     };
 
-    const handleCardArchive = (event) => {
-      if (!selectedCardRef.current) {
-        return;
-      }
-
-      const state = store.getState();
-      const card = selectors.selectCardById(state, selectedCardRef.current.id);
-
-      if (!card || !card.isPersisted) {
-        return;
-      }
-
-      const boardMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
-      const list = selectors.selectListById(state, card.listId);
-
-      if (!canArchiveCard(boardMembership, list)) {
-        return;
-      }
-
-      event.preventDefault();
-      selectedCardRef.current.openActions(CardActionsStep.StepTypes.ARCHIVE);
-    };
-
     const handleCardMembers = (event) => {
       if (!selectedCardRef.current) {
         return;
@@ -391,10 +359,6 @@ const ShortcutsProvider = React.memo(({ children }) => {
           break;
         case 'KeyT':
           handleCardNameEdit(event);
-
-          break;
-        case 'KeyV':
-          handleCardArchive(event);
 
           break;
         case 'Digit1':
