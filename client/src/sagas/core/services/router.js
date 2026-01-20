@@ -3,13 +3,14 @@
  * Licensed under the Fair Use License: https://github.com/plankanban/planka/blob/master/LICENSE.md
  */
 
-import { call, put, select, take } from 'redux-saga/effects';
+import { call, put, select, take, all } from 'redux-saga/effects';
 import { push } from '../../../lib/redux-router';
 
 import { logout } from './core';
 import request from '../request';
 import selectors from '../../../selectors';
 import actions from '../../../actions';
+import entryActions from '../../../entry-actions';
 import api from '../../../api';
 import { getAccessToken } from '../../../utils/access-token-storage';
 import mergeRecords from '../../../utils/merge-records';
@@ -146,6 +147,71 @@ export function* handleLocationChange() {
       }
 
       break;
+    case Paths.PROJECT_CALENDAR:
+    case Paths.PROJECT_CALENDAR_CARD: {
+      const { projectId } = yield select(selectors.selectPath);
+      const boardIds = yield select(selectors.selectBoardIdsForCurrentProject);
+
+      if (boardIds && boardIds.length > 0) {
+        try {
+          const results = yield all(
+            boardIds.map((boardId) => call(request, api.getBoard, boardId, true)),
+          );
+
+          const includedList = yield all(
+            results.map((result) =>
+              call(function* () {
+                yield put(entryActions.handleBoardUpdate(result.item));
+                return result.included;
+              }),
+            ),
+          );
+
+          includedList.forEach((included) => {
+            const {
+              users: usersNext,
+              boardMemberships: boardMembershipsNext,
+              labels: labelsNext,
+              lists: listsNext,
+              cards: cardsNext,
+              cardMemberships: cardMembershipsNext,
+              cardLabels: cardLabelsNext,
+              taskLists: taskListsNext,
+              tasks: tasksNext,
+              attachments: attachmentsNext,
+              customFieldGroups: customFieldGroupsNext,
+              customFields: customFieldsNext,
+              customFieldValues: customFieldValuesNext,
+            } = included;
+
+            users1 = mergeRecords(users1, usersNext);
+            boardMemberships = mergeRecords(boardMemberships, boardMembershipsNext);
+            labels = mergeRecords(labels, labelsNext);
+            lists = mergeRecords(lists, listsNext);
+            cards = mergeRecords(cards, cardsNext);
+            cardMemberships1 = mergeRecords(cardMemberships1, cardMembershipsNext);
+            cardLabels1 = mergeRecords(cardLabels1, cardLabelsNext);
+            taskLists1 = mergeRecords(taskLists1, taskListsNext);
+            tasks1 = mergeRecords(tasks1, tasksNext);
+            attachments1 = mergeRecords(attachments1, attachmentsNext);
+            customFieldGroups1 = mergeRecords(customFieldGroups1, customFieldGroupsNext);
+            customFields1 = mergeRecords(customFields1, customFieldsNext);
+            customFieldValues1 = mergeRecords(customFieldValues1, customFieldValuesNext);
+          });
+
+          projects = [
+            {
+              id: projectId,
+              boards: results.map((r) => r.item),
+            },
+          ];
+        } catch {
+          /* empty */
+        }
+      }
+
+      break;
+    }
     case Paths.CARDS:
       ({ cardId: currentCardId, boardId: currentBoardId } = yield select(selectors.selectPath));
 

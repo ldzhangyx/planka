@@ -43,6 +43,39 @@ export const selectPath = createReduxOrmSelector(
             projectId: projectModel.id,
           };
         }
+        case Paths.PROJECT_CALENDAR: {
+          const projectModel = Project.withId(pathsMatch.params.id);
+
+          if (!projectModel || !projectModel.isAvailableForUser(currentUserModel)) {
+            return {
+              projectId: null,
+            };
+          }
+
+          return {
+            projectId: projectModel.id,
+            isCalendar: true,
+          };
+        }
+        case Paths.PROJECT_CALENDAR_CARD: {
+          const cardModel = Card.withId(pathsMatch.params.cardId);
+
+          if (!cardModel || !cardModel.isAvailableForUser(currentUserModel)) {
+            return {
+              cardId: null,
+              boardId: null,
+              projectId: null,
+              isCalendar: true,
+            };
+          }
+
+          return {
+            cardId: cardModel.id,
+            boardId: cardModel.boardId,
+            projectId: cardModel.board.projectId,
+            isCalendar: true,
+          };
+        }
         case Paths.BOARDS: {
           const boardModel = Board.withId(pathsMatch.params.id);
 

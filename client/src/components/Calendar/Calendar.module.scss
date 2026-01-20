@@ -1,0 +1,294 @@
+@import '../../styles.module';
+
+.wrapper {
+  display: flex;
+  height: 100%;
+  background: #111827;
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+// Header
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.navButton {
+  background: #374151 !important;
+  color: #e5e7eb !important;
+  border: none !important;
+
+  &:hover {
+    background: #4b5563 !important;
+  }
+}
+
+.todayButton {
+  background: #374151 !important;
+  color: #e5e7eb !important;
+  border: none !important;
+
+  &:hover {
+    background: #4b5563 !important;
+  }
+}
+
+// Week container
+.weekContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+// Day headers
+.dayHeaders {
+  display: flex;
+  background: #1f2937;
+  border-bottom: 1px solid #374151;
+  flex-shrink: 0;
+}
+
+.dayHeader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  min-width: 0;
+}
+
+.todayHeader {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.dayName {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dayNumber {
+  font-size: 20px;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-top: 2px;
+}
+
+.todayNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #3b82f6;
+  border-radius: 50%;
+  color: #fff;
+}
+
+// Grid scroll
+.gridScroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.grid {
+  display: flex;
+  min-height: 100%;
+}
+
+// Time column
+.timeColumn {
+  width: 60px;
+  min-width: 60px;
+  flex-shrink: 0;
+  background: #1f2937;
+  border-right: 1px solid #374151;
+}
+
+.timeSlot {
+  height: 60px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0 8px;
+  border-bottom: 1px solid #374151;
+}
+
+.timeLabel {
+  font-size: 10px;
+  color: #6b7280;
+  transform: translateY(-8px);
+}
+
+// Day columns
+.dayColumn {
+  flex: 1;
+  min-width: 0;
+  border-right: 1px solid #374151;
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.todayColumn {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.hourCell {
+  height: 60px;
+  border-bottom: 1px solid #374151;
+  position: relative;
+  overflow: visible;
+  padding: 2px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+.hourCellDragOver {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border: 2px dashed #3b82f6;
+}
+
+// Calendar events
+.calendarEvent {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 2px;
+  background: rgba(59, 130, 246, 0.2);
+  border-left: 3px solid #3b82f6;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.3);
+  }
+}
+
+.dragHandle {
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  cursor: grab;
+  color: #9ca3af;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.eventContent {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 8px 4px 4px;
+  flex: 1;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.eventDragging {
+  background: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: grabbing;
+}
+
+.eventName {
+  font-size: 11px;
+  font-weight: 500;
+  color: #e5e7eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eventTime {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+// Empty state
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #6b7280;
+  text-align: center;
+  padding: 40px;
+
+  i {
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: #9ca3af;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// Placeholder (kept for backwards compatibility)
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #666;
+  font-size: 18px;
+}
+
+.content {
+  flex-grow: 1;
+  overflow: hidden;
+}

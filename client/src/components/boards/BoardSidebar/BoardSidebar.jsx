@@ -80,6 +80,7 @@ SidebarItem.propTypes = {
 const BoardSidebar = React.memo(() => {
   const [t] = useTranslation();
   const boardIds = useSelector(selectors.selectBoardIdsForCurrentProject);
+  const { projectId } = useSelector(selectors.selectPath);
 
   const canAdd = useSelector((state) => {
     const isEditModeEnabled = selectors.selectIsEditModeEnabled(state);
@@ -107,6 +108,15 @@ const BoardSidebar = React.memo(() => {
             </button>
           </AddBoardPopup>
         )}
+        <Link
+          to={Paths.PROJECT_CALENDAR.replace(':id', projectId)}
+          className={classNames(styles.item, styles.link)} // Use similar styles
+        >
+          <div className={styles.iconWrapper}>
+            <Icon name="calendar alternate outline" className={styles.icon} />
+          </div>
+          <span className={styles.name}>{t('common.calendar')}</span>
+        </Link>
       </div>
     </div>
   );

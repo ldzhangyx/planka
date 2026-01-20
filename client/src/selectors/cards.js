@@ -462,6 +462,91 @@ export const selectIsCurrentUserInCurrentCard = createSelector(
   },
 );
 
+export const selectCardsWithDueDateForCurrentProject = createSelector(
+  orm,
+  (state) => selectPath(state).projectId,
+  (state) => selectCurrentUserId(state),
+  ({ Project, User }, projectId, currentUserId) => {
+    if (!projectId) {
+      return [];
+    }
+
+    const projectModel = Project.withId(projectId);
+
+    if (!projectModel) {
+      return [];
+    }
+
+    const currentUserModel = User.withId(currentUserId);
+    const boardsModels = projectModel.getBoardsModelArrayAvailableForUser(currentUserModel);
+
+    console.log('Selector debug: Project', projectModel.name, 'Boards count:', boardsModels.length);
+
+    const cardsWithDueDate = [];
+
+    boardsModels.forEach((boardModel) => {
+      const boardCards = boardModel.cards.toModelArray();
+      console.log('Selector debug: Board', boardModel.name, 'Cards count:', boardCards.length);
+
+      boardCards.forEach((cardModel) => {
+        if (cardModel.dueDate && !cardModel.isClosed) {
+          cardsWithDueDate.push({
+            ...cardModel.ref,
+            boardName: boardModel.name,
+            labels: cardModel.labels.toRefArray(),
+          });
+        }
+      });
+    });
+
+    console.log('Selector debug: Total cards with due date:', cardsWithDueDate.length);
+
+    // Sort by due date
+    cardsWithDueDate.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+    return cardsWithDueDate;
+  },
+);
+
+export const selectCardsWithoutDueDateForCurrentProject = createSelector(
+  orm,
+  (state) => selectPath(state).projectId,
+  (state) => selectCurrentUserId(state),
+  ({ Project, User }, projectId, currentUserId) => {
+    if (!projectId) {
+      return [];
+    }
+
+    const projectModel = Project.withId(projectId);
+
+    if (!projectModel) {
+      return [];
+    }
+
+    const currentUserModel = User.withId(currentUserId);
+    const boardsModels = projectModel.getBoardsModelArrayAvailableForUser(currentUserModel);
+
+    const cardsWithoutDueDate = [];
+
+    boardsModels.forEach((boardModel) => {
+      boardModel.cards.toModelArray().forEach((cardModel) => {
+        if (!cardModel.dueDate && !cardModel.isClosed) {
+          cardsWithoutDueDate.push({
+            ...cardModel.ref,
+            boardName: boardModel.name,
+            labels: cardModel.labels.toRefArray(),
+          });
+        }
+      });
+    });
+
+    // Sort by name
+    cardsWithoutDueDate.sort((a, b) => a.name.localeCompare(b.name));
+
+    return cardsWithoutDueDate;
+  },
+);
+
 export default {
   makeSelectCardById,
   selectCardById,
@@ -495,4 +580,6 @@ export default {
   selectCommentIdsForCurrentCard,
   selectActivityIdsForCurrentCard,
   selectIsCurrentUserInCurrentCard,
+  selectCardsWithDueDateForCurrentProject,
+  selectCardsWithoutDueDateForCurrentProject,
 };

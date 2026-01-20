@@ -88,6 +88,7 @@ export default {
       boardNotFound_title: '面板不存在',
       boardSubscribed: '面板已订阅',
       boardUser: '面板用户',
+      calendar: '日历',
       byCreationTime: '按创建时间',
       byDefault: '默认',
       byDueDate: '按截止日期',

@@ -32,6 +32,7 @@ const CardModal = React.memo(() => {
 
   const card = useSelector(selectors.selectCurrentCard);
   const prevCardId = useSelector(selectors.selectPrevCardId);
+  const { isCalendar, projectId } = useSelector(selectors.selectPath);
 
   const canEdit = useSelector((state) => {
     const list = selectListById(state, card.listId);
@@ -47,12 +48,29 @@ const CardModal = React.memo(() => {
   const dispatch = useDispatch();
 
   const handleClose = useCallback(() => {
+    if (isCalendar && projectId) {
+      dispatch(push(Paths.PROJECT_CALENDAR.replace(':id', projectId)));
+      return;
+    }
+
     dispatch(push(Paths.BOARDS.replace(':id', card.boardId)));
-  }, [card.boardId, dispatch]);
+  }, [card.boardId, dispatch, isCalendar, projectId]);
 
   const handlePrevClick = useCallback(() => {
+    if (isCalendar && projectId) {
+      dispatch(
+        push(
+          Paths.PROJECT_CALENDAR_CARD.replace(':projectId', projectId).replace(
+            ':cardId',
+            prevCardId,
+          ),
+        ),
+      );
+      return;
+    }
+
     dispatch(push(Paths.CARDS.replace(':id', prevCardId)));
-  }, [prevCardId, dispatch]);
+  }, [prevCardId, dispatch, isCalendar, projectId]);
 
   const [ClosableModal, isClosableActiveRef] = useClosableModal();
 

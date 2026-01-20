@@ -18,11 +18,13 @@ import Board from '../../boards/Board';
 import AddBoardStep from '../../boards/AddBoardStep';
 import BoardSidebar from '../../boards/BoardSidebar';
 import BoardActions from '../../boards/BoardActions';
+import Calendar from '../../Calendar';
+import CardModal from '../../cards/CardModal';
 
 import styles from './Static.module.scss';
 
 const Static = React.memo(() => {
-  const { cardId, projectId } = useSelector(selectors.selectPath);
+  const { cardId, projectId, isCalendar } = useSelector(selectors.selectPath);
   const board = useSelector(selectors.selectCurrentBoard);
   const isFetching = useSelector(selectors.selectIsContentFetching);
   const isFavoritesActive = useSelector(selectors.selectIsFavoritesActiveForCurrentUser);
@@ -59,6 +61,22 @@ const Static = React.memo(() => {
   } else if (projectId === null) {
     wrapperClassNames = [isFavoritesActive && styles.wrapperWithFavorites, styles.wrapperFlex];
     contentNode = <GhostError message="common.projectNotFound" />;
+  } else if (isCalendar) {
+    // Handle Calendar View
+    wrapperClassNames = [
+      isFavoritesActive ? styles.wrapperBoardWithFavorites : styles.wrapperBoard,
+      styles.wrapperFlex,
+    ];
+
+    contentNode = (
+      <>
+        <BoardSidebar />
+        <div style={{ flexGrow: 1, overflow: 'hidden' }}>
+          <Calendar />
+        </div>
+        {cardId && <CardModal />}
+      </>
+    );
   } else if (board === undefined) {
     wrapperClassNames = [
       isFavoritesActive ? styles.wrapperProjectWithFavorites : styles.wrapperProject,

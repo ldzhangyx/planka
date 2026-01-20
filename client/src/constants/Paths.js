@@ -8,6 +8,8 @@ const LOGIN = '/login';
 const OIDC_CALLBACK = '/oidc-callback';
 const PROJECTS = '/projects/:id';
 const BOARDS = '/boards/:id';
+const PROJECT_CALENDAR = '/projects/:id/calendar';
+const PROJECT_CALENDAR_CARD = '/projects/:projectId/calendar/cards/:cardId';
 const CARDS = '/cards/:id';
 
 export default {
@@ -16,5 +18,7 @@ export default {
   OIDC_CALLBACK,
   PROJECTS,
   BOARDS,
+  PROJECT_CALENDAR,
+  PROJECT_CALENDAR_CARD,
   CARDS,
 };
